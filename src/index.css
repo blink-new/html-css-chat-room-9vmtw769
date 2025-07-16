@@ -97,4 +97,27 @@
   .persian-numbers {
     font-feature-settings: "ss01" on;
   }
+  
+  /* Chat specific styles */
+  #chat-box {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--muted)) transparent;
+  }
+  
+  #chat-box::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  #chat-box::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  #chat-box::-webkit-scrollbar-thumb {
+    background: hsl(var(--muted));
+    border-radius: 3px;
+  }
+  
+  #chat-box::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground));
+  }
 }
