@@ -3,591 +3,125 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>اتاق چت</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .chat-container {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
-            width: 100%;
-            max-width: 800px;
-            height: 600px;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        .chat-header {
-            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-            color: white;
-            padding: 20px 25px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .chat-title {
-            font-size: 20px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .online-indicator {
-            width: 12px;
-            height: 12px;
-            background: #10b981;
-            border-radius: 50%;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.5; }
-            100% { opacity: 1; }
-        }
-
-        .online-count {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 8px 12px;
-            border-radius: 20px;
-            font-size: 14px;
-            backdrop-filter: blur(10px);
-        }
-
-        .messages-container {
-            flex: 1;
-            padding: 20px;
-            overflow-y: auto;
-            background: #f8fafc;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .message {
-            display: flex;
-            align-items: flex-end;
-            gap: 10px;
-            animation: slideIn 0.3s ease-out;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .message.sent {
-            flex-direction: row-reverse;
-            align-self: flex-end;
-        }
-
-        .message.received {
-            align-self: flex-start;
-        }
-
-        .avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #6366f1, #8b5cf6);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 600;
-            font-size: 14px;
-            flex-shrink: 0;
-        }
-
-        .message-bubble {
-            max-width: 70%;
-            padding: 12px 16px;
-            border-radius: 18px;
-            position: relative;
-            word-wrap: break-word;
-        }
-
-        .message.sent .message-bubble {
-            background: linear-gradient(135deg, #6366f1, #8b5cf6);
-            color: white;
-            border-bottom-right-radius: 4px;
-        }
-
-        .message.received .message-bubble {
-            background: white;
-            color: #1e293b;
-            border: 1px solid #e2e8f0;
-            border-bottom-left-radius: 4px;
-        }
-
-        .message-text {
-            font-size: 15px;
-            line-height: 1.4;
-            margin-bottom: 4px;
-        }
-
-        .message-time {
-            font-size: 11px;
-            opacity: 0.7;
-        }
-
-        .message.sent .message-time {
-            color: rgba(255, 255, 255, 0.8);
-        }
-
-        .message.received .message-time {
-            color: #64748b;
-        }
-
-        .typing-indicator {
-            display: none;
-            align-items: center;
-            gap: 10px;
-            padding: 10px 20px;
-            color: #64748b;
-            font-size: 14px;
-            font-style: italic;
-        }
-
-        .typing-dots {
-            display: flex;
-            gap: 4px;
-        }
-
-        .typing-dot {
-            width: 6px;
-            height: 6px;
-            background: #64748b;
-            border-radius: 50%;
-            animation: typing 1.4s infinite;
-        }
-
-        .typing-dot:nth-child(2) {
-            animation-delay: 0.2s;
-        }
-
-        .typing-dot:nth-child(3) {
-            animation-delay: 0.4s;
-        }
-
-        @keyframes typing {
-            0%, 60%, 100% {
-                transform: translateY(0);
-            }
-            30% {
-                transform: translateY(-10px);
-            }
-        }
-
-        .input-container {
-            padding: 20px;
-            background: white;
-            border-top: 1px solid #e2e8f0;
-            display: flex;
-            gap: 12px;
-            align-items: flex-end;
-        }
-
-        .message-input {
-            flex: 1;
-            border: 2px solid #e2e8f0;
-            border-radius: 25px;
-            padding: 12px 20px;
-            font-size: 15px;
-            font-family: inherit;
-            resize: none;
-            outline: none;
-            transition: all 0.2s ease;
-            max-height: 120px;
-            min-height: 48px;
-        }
-
-        .message-input:focus {
-            border-color: #6366f1;
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-        }
-
-        .send-button {
-            width: 48px;
-            height: 48px;
-            background: linear-gradient(135deg, #6366f1, #8b5cf6);
-            border: none;
-            border-radius: 50%;
-            color: white;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s ease;
-            flex-shrink: 0;
-        }
-
-        .send-button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.4);
-        }
-
-        .send-button:active {
-            transform: scale(0.95);
-        }
-
-        .send-button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .send-icon {
-            width: 20px;
-            height: 20px;
-            fill: currentColor;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            body {
-                padding: 10px;
-            }
-
-            .chat-container {
-                height: 100vh;
-                border-radius: 0;
-            }
-
-            .chat-header {
-                padding: 15px 20px;
-            }
-
-            .chat-title {
-                font-size: 18px;
-            }
-
-            .messages-container {
-                padding: 15px;
-            }
-
-            .message-bubble {
-                max-width: 85%;
-            }
-
-            .input-container {
-                padding: 15px;
-            }
-        }
-
-        /* Scrollbar Styling */
-        .messages-container::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .messages-container::-webkit-scrollbar-track {
-            background: #f1f5f9;
-        }
-
-        .messages-container::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 3px;
-        }
-
-        .messages-container::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
-        }
-
-        /* Welcome Message */
-        .welcome-message {
-            text-align: center;
-            color: #64748b;
-            font-style: italic;
-            margin: 20px 0;
-            padding: 20px;
-            background: rgba(99, 102, 241, 0.05);
-            border-radius: 12px;
-            border: 1px dashed #6366f1;
-        }
-    </style>
+    <title>چت روم</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Vazir:wght@300;400;500;600&display=swap" rel="stylesheet">
     <!-- CRITICAL: DO NOT REMOVE/MODIFY THIS COMMENT OR THE SCRIPT BELOW -->
     <script src="https://blink.new/auto-engineer.js?projectId=html-css-chat-room-9vmtw769" type="module"></script>
   </head>
 <body>
     <div class="chat-container">
+        <!-- Header -->
         <div class="chat-header">
-            <div class="chat-title">
-                <div class="online-indicator"></div>
-                اتاق چت عمومی
-            </div>
-            <div class="online-count">
-                <span id="onlineCount">1</span> نفر آنلاین
+            <div class="room-info">
+                <div class="room-name">چت روم عمومی</div>
+                <div class="online-status">
+                    <span class="status-dot"></span>
+                    آنلاین
+                </div>
             </div>
         </div>
 
+        <!-- Messages Container -->
         <div class="messages-container" id="messagesContainer">
-            <div class="welcome-message">
-                به اتاق چت خوش آمدید! پیام خود را تایپ کنید و ارسال کنید.
+            <!-- Sample Messages -->
+            <div class="message received">
+                <div class="message-avatar">ک</div>
+                <div class="message-content">
+                    <div class="message-header">
+                        <span class="sender-name">کاربر ۱</span>
+                        <span class="message-time">۱۰:۳۰</span>
+                    </div>
+                    <div class="message-text">سلام! چطورید؟</div>
+                </div>
+            </div>
+
+            <div class="message sent">
+                <div class="message-content">
+                    <div class="message-header">
+                        <span class="message-time">۱۰:۳۲</span>
+                    </div>
+                    <div class="message-text">سلام، خوبم ممنون! شما چطورید؟</div>
+                </div>
+            </div>
+
+            <div class="message received">
+                <div class="message-avatar">م</div>
+                <div class="message-content">
+                    <div class="message-header">
+                        <span class="sender-name">مهدی</span>
+                        <span class="message-time">۱۰:۳۵</span>
+                    </div>
+                    <div class="message-text">من هم تازه وارد شدم. چه خبر؟</div>
+                </div>
             </div>
         </div>
 
-        <div class="typing-indicator" id="typingIndicator">
-            <span>در حال تایپ</span>
-            <div class="typing-dots">
-                <div class="typing-dot"></div>
-                <div class="typing-dot"></div>
-                <div class="typing-dot"></div>
-            </div>
-        </div>
-
-        <div class="input-container">
-            <textarea 
-                class="message-input" 
-                id="messageInput" 
-                placeholder="پیام خود را بنویسید..."
-                rows="1"
-            ></textarea>
-            <button class="send-button" id="sendButton">
-                <svg class="send-icon" viewBox="0 0 24 24">
-                    <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
-                </svg>
-            </button>
+        <!-- Message Input -->
+        <div class="message-input-container">
+            <form class="message-form" id="messageForm">
+                <div class="input-wrapper">
+                    <input 
+                        type="text" 
+                        id="messageInput" 
+                        placeholder="پیام خود را بنویسید..." 
+                        required
+                        autocomplete="off"
+                    >
+                    <button type="submit" class="send-button">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="22" y1="2" x2="11" y2="13"></line>
+                            <polygon points="22,2 15,22 11,13 2,9"></polygon>
+                        </svg>
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 
     <script>
-        class ChatRoom {
-            constructor() {
-                this.messages = [];
-                this.currentUser = this.generateUser();
-                this.users = [this.currentUser];
-                this.typingTimeout = null;
-                
-                this.initializeElements();
-                this.bindEvents();
-                this.addWelcomeMessages();
-            }
+        // Simple JavaScript for form handling
+        const messageForm = document.getElementById('messageForm');
+        const messageInput = document.getElementById('messageInput');
+        const messagesContainer = document.getElementById('messagesContainer');
 
-            initializeElements() {
-                this.messagesContainer = document.getElementById('messagesContainer');
-                this.messageInput = document.getElementById('messageInput');
-                this.sendButton = document.getElementById('sendButton');
-                this.typingIndicator = document.getElementById('typingIndicator');
-                this.onlineCount = document.getElementById('onlineCount');
-            }
+        messageForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const messageText = messageInput.value.trim();
+            if (messageText === '') return;
 
-            generateUser() {
-                const names = ['علی', 'فاطمه', 'محمد', 'زهرا', 'حسن', 'مریم', 'رضا', 'سارا'];
-                const colors = ['#6366f1', '#8b5cf6', '#10b981', '#f59e0b', '#ef4444', '#06b6d4'];
-                
-                return {
-                    id: Date.now(),
-                    name: names[Math.floor(Math.random() * names.length)],
-                    color: colors[Math.floor(Math.random() * colors.length)],
-                    avatar: names[Math.floor(Math.random() * names.length)].charAt(0)
-                };
-            }
+            // Create new message element
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message sent';
+            
+            const currentTime = new Date().toLocaleTimeString('fa-IR', { 
+                hour: '2-digit', 
+                minute: '2-digit' 
+            });
 
-            bindEvents() {
-                this.sendButton.addEventListener('click', () => this.sendMessage());
-                
-                this.messageInput.addEventListener('keydown', (e) => {
-                    if (e.key === 'Enter' && !e.shiftKey) {
-                        e.preventDefault();
-                        this.sendMessage();
-                    }
-                });
+            messageDiv.innerHTML = `
+                <div class="message-content">
+                    <div class="message-header">
+                        <span class="message-time">${currentTime}</span>
+                    </div>
+                    <div class="message-text">${messageText}</div>
+                </div>
+            `;
 
-                this.messageInput.addEventListener('input', () => {
-                    this.autoResize();
-                    this.handleTyping();
-                });
+            // Add message to container
+            messagesContainer.appendChild(messageDiv);
+            
+            // Clear input
+            messageInput.value = '';
+            
+            // Scroll to bottom
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        });
 
-                // Simulate other users joining
-                setTimeout(() => this.simulateUserActivity(), 3000);
-            }
-
-            autoResize() {
-                this.messageInput.style.height = 'auto';
-                this.messageInput.style.height = Math.min(this.messageInput.scrollHeight, 120) + 'px';
-            }
-
-            handleTyping() {
-                // Show typing indicator for demo
-                if (this.messageInput.value.length > 0) {
-                    this.showTypingIndicator();
-                    
-                    clearTimeout(this.typingTimeout);
-                    this.typingTimeout = setTimeout(() => {
-                        this.hideTypingIndicator();
-                    }, 2000);
-                } else {
-                    this.hideTypingIndicator();
-                }
-            }
-
-            showTypingIndicator() {
-                this.typingIndicator.style.display = 'flex';
-            }
-
-            hideTypingIndicator() {
-                this.typingIndicator.style.display = 'none';
-            }
-
-            sendMessage() {
-                const text = this.messageInput.value.trim();
-                if (!text) return;
-
-                const message = {
-                    id: Date.now(),
-                    text: text,
-                    user: this.currentUser,
-                    timestamp: new Date(),
-                    type: 'sent'
-                };
-
-                this.addMessage(message);
-                this.messageInput.value = '';
-                this.autoResize();
-                this.hideTypingIndicator();
-
-                // Simulate response after a delay
-                setTimeout(() => this.simulateResponse(), 1000 + Math.random() * 2000);
-            }
-
-            addMessage(message) {
-                this.messages.push(message);
-                
-                const messageElement = this.createMessageElement(message);
-                this.messagesContainer.appendChild(messageElement);
-                
-                this.scrollToBottom();
-            }
-
-            createMessageElement(message) {
-                const messageDiv = document.createElement('div');
-                messageDiv.className = `message ${message.type}`;
-                
-                const avatar = document.createElement('div');
-                avatar.className = 'avatar';
-                avatar.textContent = message.user.avatar;
-                avatar.style.background = message.user.color;
-                
-                const bubble = document.createElement('div');
-                bubble.className = 'message-bubble';
-                
-                const text = document.createElement('div');
-                text.className = 'message-text';
-                text.textContent = message.text;
-                
-                const time = document.createElement('div');
-                time.className = 'message-time';
-                time.textContent = this.formatTime(message.timestamp);
-                
-                bubble.appendChild(text);
-                bubble.appendChild(time);
-                
-                messageDiv.appendChild(avatar);
-                messageDiv.appendChild(bubble);
-                
-                return messageDiv;
-            }
-
-            formatTime(date) {
-                return date.toLocaleTimeString('fa-IR', { 
-                    hour: '2-digit', 
-                    minute: '2-digit' 
-                });
-            }
-
-            scrollToBottom() {
-                setTimeout(() => {
-                    this.messagesContainer.scrollTop = this.messagesContainer.scrollHeight;
-                }, 100);
-            }
-
-            simulateResponse() {
-                const responses = [
-                    'سلام! چطوری؟',
-                    'خوبم ممنون، تو چطوری؟',
-                    'عالیه! امروز چه خبر؟',
-                    'هیچی، دارم کار میکنم',
-                    'موفق باشی!',
-                    'ممنون از شما هم همینطور',
-                    'این چت روم خیلی قشنگه!',
-                    'آره واقعاً طراحی خوبی داره',
-                    'کسی فیلم خوب سراغ داره؟',
-                    'تازه یه فیلم جالب دیدم'
-                ];
-
-                const otherUser = this.generateUser();
-                const message = {
-                    id: Date.now(),
-                    text: responses[Math.floor(Math.random() * responses.length)],
-                    user: otherUser,
-                    timestamp: new Date(),
-                    type: 'received'
-                };
-
-                this.addMessage(message);
-            }
-
-            simulateUserActivity() {
-                // Add more users periodically
-                setInterval(() => {
-                    if (Math.random() > 0.7) {
-                        this.users.push(this.generateUser());
-                        this.updateOnlineCount();
-                    }
-                }, 10000);
-
-                // Simulate random messages
-                setInterval(() => {
-                    if (Math.random() > 0.8) {
-                        this.simulateResponse();
-                    }
-                }, 15000);
-            }
-
-            updateOnlineCount() {
-                this.onlineCount.textContent = this.users.length;
-            }
-
-            addWelcomeMessages() {
-                // Remove welcome message after first interaction
-                this.messageInput.addEventListener('focus', () => {
-                    const welcomeMsg = document.querySelector('.welcome-message');
-                    if (welcomeMsg) {
-                        welcomeMsg.style.animation = 'slideIn 0.3s ease-out reverse';
-                        setTimeout(() => welcomeMsg.remove(), 300);
-                    }
-                }, { once: true });
-            }
-        }
-
-        // Initialize chat room when page loads
-        document.addEventListener('DOMContentLoaded', () => {
-            new ChatRoom();
+        // Auto-scroll to bottom on page load
+        window.addEventListener('load', function() {
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
         });
     </script>
 </body>
